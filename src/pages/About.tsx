@@ -17,7 +17,7 @@ const About: React.FC = () => {
         >
           <div className="absolute inset-0 bg-space-500 rounded-full blur-2xl opacity-20 animate-pulse"></div>
           <img
-            src=""
+            src="https://pbqumsltaplaywsnbfcg.supabase.co/storage/v1/object/public/blog-assets/IMG_5751.jpeg"
             alt="Profile"
             className="w-full h-full object-cover rounded-full border-4 border-white dark:border-space-800 shadow-2xl relative z-10"
           />

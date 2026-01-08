@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import { Rocket } from "lucide-react";
-import { fetchPosts } from "../services/mockData";
+import { fetchPosts } from "../services/dataService";
 import type { BlogPost, Category } from "../types/blog";
 import BlogCard from "../components/BlogCard";
 

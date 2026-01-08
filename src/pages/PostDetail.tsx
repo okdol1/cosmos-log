@@ -4,8 +4,8 @@ import { useTranslation } from "react-i18next";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Helmet } from "react-helmet-async";
-import { Share2, ArrowLeft, Calendar, Clock, Rocket } from "lucide-react";
-import { fetchPostById } from "../services/mockData";
+import { Share2, ArrowLeft, Rocket } from "lucide-react";
+import { fetchPostById } from "../services/dataService";
 import type { BlogPost } from "../types/blog";
 
 const PostDetail: React.FC = () => {
