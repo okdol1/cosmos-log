@@ -1,0 +1,32 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "Eunbin"
+  },
+  "about": {
+    "name": "Eunbin Yeon",
+    "role": "Frontend Developer",
+    "bio": ""
+  },
+  "filter": {
+    "all": "All",
+    "dev": "Dev",
+    "essay": "Essay",
+    "book": "Book"
+  },
+  "common": {
+    "readMore": "Read More",
+    "loading": "Receiving Data...",
+    "notFound": "Signal Lost.",
+    "share": "Transmit",
+    "shareSuccess": "Coordinates Copied!",
+    "back": "Go Back"
+  },
+  "theme": {
+    "dark": "Dark Mode",
+    "light": "Light Mode"
+  },
+  "easterEgg": {
+    "found": "New Planet Discovered! 🪐"
+  }
+}

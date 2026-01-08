@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-bg-primary: #0b0d17;
+  --color-text-primary: #e0e7ff;
+}
+
+body {
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  font-family: "Pretendard", sans-serif;
+  overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.dark body {
+  --color-bg-primary: #0b0d17;
+  --color-text-primary: #e0e7ff;
+}
+
+.light body {
+  --color-bg-primary: #f8fafc;
+  --color-text-primary: #1e293b;
+}
