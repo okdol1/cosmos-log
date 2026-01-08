@@ -74,7 +74,7 @@ const Home: React.FC = () => {
           animate={{ rotate: 360 }}
           transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
         >
-          <Rocket size={48} className="text-space-500" />
+          <Rocket size={32} className="text-space-500" />
         </motion.div>
         <p className="mt-4 text-space-500 font-mono animate-pulse">
           {t("common.loading")}
@@ -86,24 +86,30 @@ const Home: React.FC = () => {
   return (
     <div className="space-y-12">
       {/* Filter Tabs */}
-      <div className="flex justify-center flex-wrap gap-2">
+      <div className="flex justify-center flex-wrap gap-4 border-b border-gray-100 dark:border-space-800 pb-4">
         {categories.map((cat) => (
           <button
             key={cat.key}
             onClick={() => setFilter(cat.key)}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+            className={`px-2 py-1 text-sm font-medium transition-all duration-300 relative ${
               filter === cat.key
-                ? "bg-space-500 text-white shadow-lg shadow-space-500/30"
-                : "bg-white dark:bg-space-800 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-space-700"
+                ? "text-space-500"
+                : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
             }`}
           >
             {cat.label}
+            {filter === cat.key && (
+              <motion.div
+                layoutId="activeFilter"
+                className="absolute -bottom-[17px] left-0 right-0 h-0.5 bg-space-500"
+              />
+            )}
           </button>
         ))}
       </div>
 
-      {/* Posts Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {/* Posts List */}
+      <div className="max-w-4xl mx-auto space-y-4">
         <AnimatePresence mode="popLayout">
           {filteredPosts.map((post) => (
             <BlogCard key={post.id} post={post} />

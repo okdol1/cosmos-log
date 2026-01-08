@@ -11,7 +11,6 @@ const mapPost = (row: any): BlogPost => ({
   category: row.category as Category,
   tags: row.tags || [],
   thumbnailUrl: row.thumbnail_url,
-  readTime: row.read_time || 5,
 });
 
 export const getPosts = async (): Promise<BlogPost[]> => {

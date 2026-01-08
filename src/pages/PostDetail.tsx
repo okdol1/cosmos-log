@@ -41,7 +41,7 @@ const PostDetail: React.FC = () => {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[50vh]">
-        <Rocket size={48} className="text-space-500 animate-bounce" />
+        <Rocket size={32} className="text-space-500 animate-bounce" />
         <p className="mt-4 text-space-500 font-mono">{t("common.loading")}</p>
       </div>
     );
@@ -62,7 +62,7 @@ const PostDetail: React.FC = () => {
   }
 
   return (
-    <article className="max-w-3xl mx-auto animate-fadeIn">
+    <article className="max-w-3xl mx-auto animate-fadeIn px-4 sm:px-0">
       <Helmet>
         <title>{post.title} | Cosmos Log</title>
         <meta name="description" content={post.excerpt} />
@@ -72,33 +72,60 @@ const PostDetail: React.FC = () => {
         <meta property="og:type" content="article" />
       </Helmet>
 
+      {/* Top Navigation */}
+      <nav className="mb-8 sm:mb-12">
+        <button
+          onClick={() => navigate(-1)}
+          className="group flex items-center gap-2 text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+        >
+          <div className="p-1 rounded-full group-hover:bg-gray-100 dark:group-hover:bg-space-800 transition-colors">
+            <ArrowLeft size={20} />
+          </div>
+          <span>{t("common.back")}</span>
+        </button>
+      </nav>
+
       {/* Header */}
-      <header className="mb-12 text-center">
-        <div className="flex items-center justify-center gap-2 mb-6">
+      <header className="mb-10 sm:mb-14">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3 text-sm font-medium tracking-wider uppercase">
+            <span className="text-space-500 dark:text-space-400">
+              {post.category}
+            </span>
+            <span className="text-gray-300 dark:text-space-700">•</span>
+            <time className="text-gray-500 dark:text-space-400">
+              {post.date}
+            </time>
+          </div>
+
           <button
-            onClick={() => navigate(-1)}
-            className="absolute left-4 sm:left-auto sm:translate-x-[-400%] p-2 rounded-full hover:bg-gray-100 dark:hover:bg-space-800 transition-colors"
+            onClick={handleShare}
+            className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-100 dark:bg-space-800 text-gray-600 dark:text-space-300 hover:bg-space-100 dark:hover:bg-space-700 hover:text-space-500 transition-colors text-xs font-medium"
           >
-            <ArrowLeft size={24} />
+            <Share2 size={16} />
+            {t("common.share")}
           </button>
-          <span className="px-3 py-1 text-sm font-bold text-space-500 bg-space-100 dark:bg-space-900/50 rounded-full uppercase tracking-wider">
-            {post.category}
-          </span>
         </div>
 
-        <h1 className="text-3xl sm:text-5xl font-bold mb-6 leading-tight text-gray-900 dark:text-white">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 text-gray-900 dark:text-white leading-tight">
           {post.title}
         </h1>
 
-        <div className="flex items-center justify-center gap-6 text-sm text-gray-500 dark:text-space-300">
-          <time>{post.date}</time>
+        <div className="flex flex-wrap gap-2">
+          {post.tags.map((tag) => (
+            <span
+              key={tag}
+              className="text-xs font-medium text-gray-500 dark:text-space-400 bg-gray-50 dark:bg-space-900/50 border border-gray-100 dark:border-space-800 px-2.5 py-1 rounded-md"
+            >
+              #{tag}
+            </span>
+          ))}
         </div>
       </header>
 
       {/* Thumbnail */}
       {post.thumbnailUrl && (
-        <div className="mb-12 rounded-2xl overflow-hidden shadow-2xl aspect-video relative">
-          <div className="absolute inset-0 bg-space-900/10 dark:bg-space-900/30" />
+        <div className="mb-12 sm:mb-16 rounded-2xl overflow-hidden shadow-sm border border-gray-100 dark:border-space-800 aspect-video relative bg-gray-50 dark:bg-space-900">
           <img
             src={post.thumbnailUrl}
             alt={post.title}
@@ -108,18 +135,18 @@ const PostDetail: React.FC = () => {
       )}
 
       {/* Content */}
-      <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-bold prose-a:text-space-500 hover:prose-a:text-space-300 prose-img:rounded-xl">
+      <div
+        className="prose prose-lg dark:prose-invert max-w-none 
+        prose-headings:font-bold prose-headings:text-gray-900 dark:prose-headings:text-white
+        prose-p:text-gray-600 dark:prose-p:text-space-200 prose-p:leading-8
+        prose-a:text-space-500 hover:prose-a:text-space-600 dark:hover:prose-a:text-space-400 prose-a:no-underline hover:prose-a:underline
+        prose-img:rounded-xl prose-img:shadow-md
+        prose-blockquote:border-space-500 prose-blockquote:bg-gray-50 dark:prose-blockquote:bg-space-800/30 prose-blockquote:not-italic prose-blockquote:py-2 prose-blockquote:px-6 prose-blockquote:rounded-r-lg"
+      >
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
           components={{
-            // Custom renderer for blockquotes to look like warnings/notes
-            blockquote: ({ node, ...props }: any) => (
-              <blockquote
-                className="border-l-4 border-space-500 bg-gray-50 dark:bg-space-800/50 p-4 rounded-r-lg italic"
-                {...props}
-              />
-            ),
-            // Namuwiki style footnotes styling
+            // footnotes styling
             a: ({ node, ...props }: any) => {
               if (props.href?.startsWith("#user-content-fn")) {
                 return (
@@ -136,31 +163,9 @@ const PostDetail: React.FC = () => {
         </ReactMarkdown>
       </div>
 
-      {/* Share Section */}
-      <div className="mt-16 pt-8 border-t border-gray-200 dark:border-space-800 flex justify-between items-center">
-        <div className="flex gap-2">
-          {post.tags.map((tag) => (
-            <span
-              key={tag}
-              className="text-sm text-gray-500 dark:text-space-300"
-            >
-              #{tag}
-            </span>
-          ))}
-        </div>
-
-        <button
-          onClick={handleShare}
-          className="flex items-center gap-2 px-4 py-2 rounded-full bg-space-500 text-white hover:bg-space-600 transition-colors shadow-lg hover:shadow-space-500/30"
-        >
-          <Share2 size={18} />
-          {t("common.share")}
-        </button>
-      </div>
-
       {/* Toast Notification */}
       {showShareToast && (
-        <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg z-50 animate-fadeUp">
+        <div className="fixed bottom-28 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg z-50 animate-fadeUp">
           {t("common.shareSuccess")}
         </div>
       )}
