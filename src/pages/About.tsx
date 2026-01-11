@@ -11,7 +11,7 @@ const About: React.FC = () => {
         <div className="flex-shrink-0">
           <div className="w-32 h-32 md:w-40 md:h-40 rounded-2xl overflow-hidden shadow-sm border border-gray-100 dark:border-space-800">
             <img
-              src="https://pbqumsltaplaywsnbfcg.supabase.co/storage/v1/object/public/blog-assets/IMG_5751.jpeg"
+              src="https://pbqumsltaplaywsnbfcg.supabase.co/storage/v1/object/public/blog-assets/static/profile.jpeg"
               alt="Profile"
               className="w-full h-full object-cover"
             />
