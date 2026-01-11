@@ -1,73 +1,98 @@
-# React + TypeScript + Vite
+# Cosmos Log
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, responsive personal blog platform built with React 19 and TypeScript. This project leverages a component-driven architecture to deliver a seamless reading experience with robust internationalization, theming support, and performant content delivery.
 
-Currently, two official plugins are available:
+## Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Core
+- **Framework:** React 19
+- **Build Tool:** Vite
+- **Language:** TypeScript
 
-## React Compiler
+### State & Routing
+- **State Management:** Zustand
+- **Routing:** React Router v7
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Styling & UI
+- **CSS Framework:** Tailwind CSS
+- **Animations:** Framer Motion
+- **Icons:** Lucide React
+- **Typography:** @tailwindcss/typography
 
-## Expanding the ESLint configuration
+### Data & Backend
+- **BaaS:** Supabase (PostgreSQL)
+- **Content Rendering:** react-markdown, remark-gfm
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Utilities
+- **Internationalization:** i18next, react-i18next
+- **SEO:** react-helmet-async
+- **Date Handling:** date-fns
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Key Features
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- **Dynamic Content Management:** Supports rich-text blog posts via Markdown, integrated seamlessly with Supabase.
+- **Advanced Theming:** System-aware Dark/Light mode toggle with persistent user preference.
+- **Internationalization (i18n):** Full support for multi-language content (Korean/English) with dynamic locale switching.
+- **SEO Optimization:** Dynamic meta tag management for improved search engine visibility.
+- **Responsive Design:** Mobile-first architecture ensuring consistent experience across all devices.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Getting Started
+
+### Prerequisites
+
+- Node.js (Latest LTS recommended)
+- npm or pnpm
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/okdol1/cosmos-log.git
+   cd cosmos-log
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Configure environment variables:
+   Create a `.env` file in the root directory and add your Supabase credentials:
+   ```env
+   VITE_SUPABASE_URL=your_supabase_url
+   VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+   ```
+
+### Development
+
+Start the development server:
+```bash
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Build
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Create a production build:
+```bash
+npm run build
 ```
+
+## Project Structure
+
+```
+src/
+├── assets/        # Static assets
+├── components/    # Reusable UI components
+├── hooks/         # Custom React hooks
+├── lib/           # Library configurations (Supabase, etc.)
+├── locales/       # i18n translation files
+├── pages/         # Route components
+├── services/      # API and data fetching services
+├── store/         # Global state management (Zustand)
+├── types/         # TypeScript type definitions
+└── utils/         # Helper functions
+```
+
+## License
+
+This project is licensed under the MIT License.
