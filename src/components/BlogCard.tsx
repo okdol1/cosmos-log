@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
@@ -31,7 +30,7 @@ const BlogCard: React.FC<BlogCardProps> = ({ post }) => {
               />
             </div>
           )}
-          
+
           <div className="flex-grow space-y-3">
             <div className="flex items-center gap-3 text-xs font-medium tracking-wider uppercase">
               <span className="text-space-500 dark:text-space-400">
@@ -62,7 +61,7 @@ const BlogCard: React.FC<BlogCardProps> = ({ post }) => {
                   </span>
                 ))}
               </div>
-              
+
               <div className="opacity-0 group-hover:opacity-100 transform translate-x-[-10px] group-hover:translate-x-0 transition-all duration-300 text-space-500">
                 <ArrowRight size={20} />
               </div>

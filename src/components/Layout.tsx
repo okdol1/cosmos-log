@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Moon, Sun, Languages, Github, Linkedin } from "lucide-react";

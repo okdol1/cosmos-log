@@ -22,6 +22,10 @@
     "shareSuccess": "Coordinates Copied!",
     "back": "Go Back"
   },
+  "notFoundPage": {
+    "title": "404",
+    "message": "Page not found."
+  },
   "theme": {
     "dark": "Dark Mode",
     "light": "Light Mode"

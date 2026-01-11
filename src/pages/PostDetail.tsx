@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Helmet } from "react-helmet-async";
-import { Share2, ArrowLeft, Rocket } from "lucide-react";
+import { Share2, ArrowLeft } from "lucide-react";
 import { fetchPostById } from "../services/dataService";
 import type { BlogPost } from "../types/blog";
+import Loading from "../components/Loading";
 
 const PostDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -39,12 +40,7 @@ const PostDetail: React.FC = () => {
   };
 
   if (loading) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[50vh]">
-        <Rocket size={32} className="text-space-500 animate-bounce" />
-        <p className="mt-4 text-space-500 font-mono">{t("common.loading")}</p>
-      </div>
-    );
+    return <Loading />;
   }
 
   if (!post) {

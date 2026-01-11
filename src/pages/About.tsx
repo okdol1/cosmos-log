@@ -1,4 +1,3 @@
-import React from "react";
 import { Github, Linkedin, Mail } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -29,7 +28,7 @@ const About: React.FC = () => {
               {t("about.role")}
             </p>
           </div>
-          
+
           <div className="prose prose-sm dark:prose-invert text-gray-600 dark:text-space-200 leading-relaxed">
             <p>{t("about.bio")}</p>
           </div>

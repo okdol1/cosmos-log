@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
-import { Rocket } from "lucide-react";
 import { fetchPosts } from "../services/dataService";
 import type { BlogPost, Category } from "../types/blog";
 import BlogCard from "../components/BlogCard";
+import Loading from "../components/Loading";
 
 const KONAMI_CODE = [
   "ArrowUp",
@@ -68,19 +68,7 @@ const Home: React.FC = () => {
   ];
 
   if (loading) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[50vh]">
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-        >
-          <Rocket size={32} className="text-space-500" />
-        </motion.div>
-        <p className="mt-4 text-space-500 font-mono animate-pulse">
-          {t("common.loading")}
-        </p>
-      </div>
-    );
+    return <Loading />;
   }
 
   return (
