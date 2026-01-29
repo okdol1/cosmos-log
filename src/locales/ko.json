@@ -1,7 +1,8 @@
 {
   "nav": {
-    "home": "홈",
-    "about": "연은빈"
+    "home": "Home",
+    "blog": "Blog",
+    "about": "About"
   },
   "about": {
     "name": "연은빈",
@@ -32,5 +33,20 @@
   },
   "easterEgg": {
     "found": "새로운 행성을 발견했습니다! 🪐"
+  },
+  "book": {
+    "status": {
+      "reading": "읽는 중",
+      "completed": "완료"
+    }
+  },
+  "home": {
+    "latestBlog": "최근 글",
+    "latestBooks": "Book",
+    "latestPlaylist": "What I See 👀",
+    "viewAll": "더보기"
+  },
+  "footnotes": {
+    "title": "주석"
   }
 }
