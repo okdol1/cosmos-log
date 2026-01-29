@@ -1,18 +1,9 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  fetchPosts,
-  fetchBooks,
-  fetchYoutubePlaylists,
-} from "../services/dataService";
-import type { BlogPost } from "../types/blog";
-import type { Book } from "../types/book";
-import type { YoutubePlaylist } from "../types/youtube";
-import SectionHeader from "../components/SectionHeader";
-import BlogCardCompact from "../components/BlogCardCompact";
-import BookCardCompact from "../components/BookCardCompact";
-import YoutubeCardCompact from "../components/YoutubeCardCompact";
+import { fetchPosts } from "../services/dataService";
+import type { BlogPost, Category } from "../types/blog";
+import BlogCard from "../components/BlogCard";
 import Loading from "../components/Loading";
 
 const KONAMI_CODE = [
@@ -28,29 +19,22 @@ const KONAMI_CODE = [
   "a",
 ];
 
-const Home: React.FC = () => {
+const Blog: React.FC = () => {
   const { t } = useTranslation();
   const [posts, setPosts] = useState<BlogPost[]>([]);
-  const [books, setBooks] = useState<Book[]>([]);
-  const [playlists, setPlaylists] = useState<YoutubePlaylist[]>([]);
+  const [filter, setFilter] = useState<Category | "ALL">("ALL");
   const [loading, setLoading] = useState(true);
   const [konamiIndex, setKonamiIndex] = useState(0);
   const [showEasterEgg, setShowEasterEgg] = useState(false);
 
   useEffect(() => {
-    const loadData = async () => {
+    const loadPosts = async () => {
       setLoading(true);
-      const [postsData, booksData, playlistsData] = await Promise.all([
-        fetchPosts(),
-        fetchBooks(),
-        fetchYoutubePlaylists(),
-      ]);
-      setPosts(postsData.slice(0, 5));
-      setBooks(booksData.slice(0, 5));
-      setPlaylists(playlistsData.slice(0, 5));
+      const data = await fetchPosts();
+      setPosts(data);
       setLoading(false);
     };
-    loadData();
+    loadPosts();
   }, []);
 
   // Easter Egg Logic
@@ -73,47 +57,59 @@ const Home: React.FC = () => {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [konamiIndex]);
 
+  const filteredPosts =
+    filter === "ALL" ? posts : posts.filter((post) => post.category === filter);
+
+  const categories: { key: Category | "ALL"; label: string }[] = [
+    { key: "ALL", label: t("filter.all") },
+    { key: "DEV", label: t("filter.dev") },
+    { key: "ESSAY", label: t("filter.essay") },
+    { key: "BOOK", label: t("filter.book") },
+  ];
+
   if (loading) {
     return <Loading />;
   }
 
   return (
-    <div className="space-y-16">
-      {/* Latest Blog Posts */}
-      <section>
-        <SectionHeader title={t("home.latestBlog")} linkTo="/blog" />
-        <div className="space-y-1">
-          <AnimatePresence mode="popLayout">
-            {posts.map((post) => (
-              <BlogCardCompact key={post.id} post={post} />
-            ))}
-          </AnimatePresence>
-        </div>
-      </section>
+    <div className="space-y-12">
+      {/* Filter Tabs */}
+      <div className="flex justify-center flex-wrap gap-4 border-b border-gray-100 dark:border-space-800 pb-4">
+        {categories.map((cat) => (
+          <button
+            key={cat.key}
+            onClick={() => setFilter(cat.key)}
+            className={`px-2 py-1 text-sm font-medium transition-all duration-300 relative ${
+              filter === cat.key
+                ? "text-space-500"
+                : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+            }`}
+          >
+            {cat.label}
+            {filter === cat.key && (
+              <motion.div
+                layoutId="activeFilter"
+                className="absolute -bottom-[17px] left-0 right-0 h-0.5 bg-space-500"
+              />
+            )}
+          </button>
+        ))}
+      </div>
 
-      {/* Latest Books */}
-      <section>
-        <SectionHeader title={t("home.latestBooks")} linkTo="/book" />
-        <div className="space-y-1">
-          <AnimatePresence mode="popLayout">
-            {books.map((book) => (
-              <BookCardCompact key={book.id} book={book} />
-            ))}
-          </AnimatePresence>
-        </div>
-      </section>
+      {/* Posts List */}
+      <div className="max-w-4xl mx-auto space-y-4">
+        <AnimatePresence mode="popLayout">
+          {filteredPosts.map((post) => (
+            <BlogCard key={post.id} post={post} />
+          ))}
+        </AnimatePresence>
+      </div>
 
-      {/* Latest Playlist */}
-      <section>
-        <SectionHeader title={t("home.latestPlaylist")} linkTo="/playlist" />
-        <div className="space-y-1">
-          <AnimatePresence mode="popLayout">
-            {playlists.map((playlist) => (
-              <YoutubeCardCompact key={playlist.id} playlist={playlist} />
-            ))}
-          </AnimatePresence>
+      {filteredPosts.length === 0 && (
+        <div className="text-center py-20 text-gray-500 dark:text-space-300">
+          {t("common.notFound")}
         </div>
-      </section>
+      )}
 
       {/* Easter Egg Modal */}
       <AnimatePresence>
@@ -144,4 +140,4 @@ const Home: React.FC = () => {
   );
 };
 
-export default Home;
+export default Blog;
