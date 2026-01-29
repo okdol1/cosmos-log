@@ -1,15 +1,23 @@
-import { useTranslation } from "react-i18next";
-import { Rocket } from "lucide-react";
+const SkeletonLine: React.FC<{ className?: string }> = ({ className = "" }) => (
+  <div
+    className={`bg-gray-200 dark:bg-space-800 rounded animate-pulse ${className}`}
+  />
+);
 
 const Loading: React.FC = () => {
-  const { t } = useTranslation();
-
   return (
-    <div className="flex flex-col items-center justify-center min-h-[50vh]">
-      <Rocket size={32} className="text-space-500 animate-bounce" />
-      <p className="mt-4 text-gray-600 dark:text-gray-300 font-mono">
-        {t("common.loading")}
-      </p>
+    <div className="space-y-8 max-w-4xl mx-auto">
+      {[1, 2, 3].map((i) => (
+        <div key={i} className="p-6 space-y-4">
+          <div className="flex items-center gap-3">
+            <SkeletonLine className="h-3 w-16" />
+            <SkeletonLine className="h-3 w-24" />
+          </div>
+          <SkeletonLine className="h-6 w-3/4" />
+          <SkeletonLine className="h-4 w-full" />
+          <SkeletonLine className="h-4 w-2/3" />
+        </div>
+      ))}
     </div>
   );
 };

@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import i18n from '../locales/i18n';
 
 type Theme = 'dark' | 'light';
@@ -18,32 +19,48 @@ const getSystemTheme = (): Theme => {
   return 'light';
 };
 
-export const useStore = create<AppState>((set) => ({
-  theme: getSystemTheme(),
-  toggleTheme: () => set((state: AppState) => {
-    const newTheme = state.theme === 'light' ? 'dark' : 'light';
-    if (newTheme === 'dark') {
-      document.documentElement.classList.add('dark');
-      document.documentElement.classList.remove('light');
-    } else {
-      document.documentElement.classList.remove('dark');
-      document.documentElement.classList.add('light');
+const getInitialLanguage = (): string => {
+  return navigator.language.startsWith('ko') ? 'ko' : 'en';
+};
+
+const applyTheme = (theme: Theme) => {
+  if (theme === 'dark') {
+    document.documentElement.classList.add('dark');
+    document.documentElement.classList.remove('light');
+  } else {
+    document.documentElement.classList.remove('dark');
+    document.documentElement.classList.add('light');
+  }
+};
+
+export const useStore = create<AppState>()(
+  persist(
+    (set) => ({
+      theme: getSystemTheme(),
+      toggleTheme: () => set((state: AppState) => {
+        const newTheme = state.theme === 'light' ? 'dark' : 'light';
+        applyTheme(newTheme);
+        return { theme: newTheme };
+      }),
+      setTheme: (theme: Theme) => set(() => {
+        applyTheme(theme);
+        return { theme };
+      }),
+      language: getInitialLanguage(),
+      setLanguage: (lang: string) => {
+        i18n.changeLanguage(lang);
+        set({ language: lang });
+      },
+    }),
+    {
+      name: 'eunbin-space-settings',
+      onRehydrateStorage: () => (state) => {
+        // Apply saved settings after rehydration
+        if (state) {
+          applyTheme(state.theme);
+          i18n.changeLanguage(state.language);
+        }
+      },
     }
-    return { theme: newTheme };
-  }),
-  setTheme: (theme: Theme) => set(() => {
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
-      document.documentElement.classList.remove('light');
-    } else {
-      document.documentElement.classList.remove('dark');
-      document.documentElement.classList.add('light');
-    }
-    return { theme };
-  }),
-  language: i18n.language,
-  setLanguage: (lang: string) => {
-    i18n.changeLanguage(lang);
-    set({ language: lang });
-  },
-}));
+  )
+);
