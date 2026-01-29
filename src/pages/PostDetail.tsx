@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import ReactMarkdown from "react-markdown";
@@ -8,6 +8,9 @@ import { Share2, ArrowLeft } from "lucide-react";
 import { fetchPostById } from "../services/dataService";
 import type { BlogPost } from "../types/blog";
 import Loading from "../components/Loading";
+import Footnote from "../components/Footnote";
+import FootnoteList from "../components/FootnoteList";
+import { parseFootnotes, type Footnote as FootnoteType } from "../utils/parseFootnotes";
 
 const PostDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -29,6 +32,21 @@ const PostDetail: React.FC = () => {
     loadPost();
   }, [id]);
 
+  // Parse footnotes from content - must be before conditional returns
+  const { content: parsedContent, footnotes } = useMemo(() => {
+    if (!post) return { content: "", footnotes: [] as FootnoteType[] };
+    return parseFootnotes(post.content);
+  }, [post]);
+
+  // Build footnote map for rendering - must be before conditional returns
+  const footnoteMap = useMemo(() => {
+    const map: Record<number, FootnoteType> = {};
+    footnotes.forEach((fn) => {
+      map[fn.id] = fn;
+    });
+    return map;
+  }, [footnotes]);
+
   const handleShare = async () => {
     try {
       await navigator.clipboard.writeText(window.location.href);
@@ -48,7 +66,7 @@ const PostDetail: React.FC = () => {
       <div className="text-center py-20">
         <h2 className="text-2xl font-bold mb-4">{t("common.notFound")}</h2>
         <button
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/blog")}
           className="text-space-500 hover:underline"
         >
           {t("common.back")}
@@ -60,7 +78,7 @@ const PostDetail: React.FC = () => {
   return (
     <article className="max-w-3xl mx-auto animate-fadeIn px-4 sm:px-0">
       <Helmet>
-        <title>{post.title} | Cosmos Log</title>
+        <title>{post.title} | eunbin.space</title>
         <meta name="description" content={post.excerpt} />
         <meta property="og:title" content={post.title} />
         <meta property="og:description" content={post.excerpt} />
@@ -132,17 +150,53 @@ const PostDetail: React.FC = () => {
 
       {/* Content */}
       <div
-        className="prose prose-lg dark:prose-invert max-w-none 
-        prose-headings:font-bold prose-headings:text-gray-900 dark:prose-headings:text-white
-        prose-p:text-gray-600 dark:prose-p:text-space-200 prose-p:leading-8
+        className="prose prose-base dark:prose-invert max-w-none
+        prose-headings:font-semibold prose-headings:tracking-tight prose-headings:text-gray-900 dark:prose-headings:text-white
+        prose-p:text-[15px] prose-p:leading-7 prose-p:text-gray-600 dark:prose-p:text-space-200
         prose-a:text-space-500 hover:prose-a:text-space-600 dark:hover:prose-a:text-space-400 prose-a:no-underline hover:prose-a:underline
         prose-img:rounded-xl prose-img:shadow-md
-        prose-blockquote:border-space-500 prose-blockquote:bg-gray-50 dark:prose-blockquote:bg-space-800/30 prose-blockquote:not-italic prose-blockquote:py-2 prose-blockquote:px-6 prose-blockquote:rounded-r-lg"
+        prose-blockquote:border-l-2 prose-blockquote:border-space-500 prose-blockquote:bg-gray-50 dark:prose-blockquote:bg-space-800/30 prose-blockquote:not-italic prose-blockquote:py-2 prose-blockquote:px-6 prose-blockquote:rounded-r-lg
+        prose-code:text-sm prose-code:rounded-md prose-code:px-1.5 prose-code:py-0.5 prose-code:bg-gray-100 dark:prose-code:bg-space-800 prose-code:before:content-none prose-code:after:content-none"
       >
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
           components={{
-            // footnotes styling
+            // Custom footnotes rendering
+            p: ({ node, children, ...props }: any) => {
+              // Check if children contain footnote placeholders
+              const processChildren = (child: any): any => {
+                if (typeof child === "string") {
+                  const parts = child.split(/(\{\{FN:\d+\}\})/g);
+                  if (parts.length === 1) return child;
+
+                  return parts.map((part, i) => {
+                    const match = part.match(/\{\{FN:(\d+)\}\}/);
+                    if (match) {
+                      const fnId = parseInt(match[1], 10);
+                      const fn = footnoteMap[fnId];
+                      if (fn) {
+                        return (
+                          <Footnote
+                            key={`fn-${fnId}-${i}`}
+                            id={fn.id}
+                            content={fn.content}
+                          />
+                        );
+                      }
+                    }
+                    return part;
+                  });
+                }
+                return child;
+              };
+
+              const processedChildren = Array.isArray(children)
+                ? children.map(processChildren)
+                : processChildren(children);
+
+              return <p {...props}>{processedChildren}</p>;
+            },
+            // Standard markdown footnotes styling
             a: ({ node, ...props }: any) => {
               if (props.href?.startsWith("#user-content-fn")) {
                 return (
@@ -155,9 +209,12 @@ const PostDetail: React.FC = () => {
             },
           }}
         >
-          {post.content}
+          {parsedContent}
         </ReactMarkdown>
       </div>
+
+      {/* Footnotes List */}
+      <FootnoteList footnotes={footnotes} />
 
       {/* Toast Notification */}
       {showShareToast && (
