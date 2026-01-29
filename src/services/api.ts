@@ -1,5 +1,7 @@
 import { supabase } from '../lib/supabase';
 import type { BlogPost, Category } from '../types/blog';
+import type { Book, BookStatus } from '../types/book';
+import type { YoutubePlaylist } from '../types/youtube';
 
 // Map database row to BlogPost type
 const mapPost = (row: any): BlogPost => ({
@@ -94,4 +96,66 @@ export const uploadImage = async (file: File): Promise<string | null> => {
     .getPublicUrl(filePath);
 
   return data.publicUrl;
+};
+
+// Books API
+const mapBook = (row: any): Book => ({
+  id: row.id,
+  title: row.title,
+  author: row.author,
+  status: (row.status as BookStatus) || "completed",
+  content: row.content,
+  thumbnailUrl: row.thumbnail_url,
+  createdAt: new Date(row.created_at).toISOString().split('T')[0],
+});
+
+export const getBooks = async (): Promise<Book[]> => {
+  const { data, error } = await supabase
+    .from('books')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching books:', error);
+    return [];
+  }
+
+  return data.map(mapBook);
+};
+
+export const getBookById = async (id: string): Promise<Book | undefined> => {
+  const { data, error } = await supabase
+    .from('books')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (error) {
+    console.error('Error fetching book:', error);
+    return undefined;
+  }
+
+  return mapBook(data);
+};
+
+// YouTube Playlists API
+const mapYoutubePlaylist = (row: any): YoutubePlaylist => ({
+  id: row.id,
+  title: row.title,
+  playlistUrl: row.playlist_url,
+  createdAt: new Date(row.created_at).toISOString().split('T')[0],
+});
+
+export const getYoutubePlaylists = async (): Promise<YoutubePlaylist[]> => {
+  const { data, error } = await supabase
+    .from('youtube_playlists')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching youtube playlists:', error);
+    return [];
+  }
+
+  return data.map(mapYoutubePlaylist);
 };
